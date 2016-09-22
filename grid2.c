@@ -71,6 +71,7 @@ int result(int i, int j, int size, int grid[][size], int sum){
 			{
 				return 0;
 			}
+			return tmp;
 		}
 					
 	}   
