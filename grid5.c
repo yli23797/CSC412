@@ -2,9 +2,9 @@
 #include <pthread.h>
 #include <stdlib.h>
 
-#define NUM_THREADS 6
+#define NUM_THREADS 5
 
-#define gnum 7
+#define gnum 6
 int grid[gnum][gnum];
 int grid2[gnum][gnum];
 
@@ -70,7 +70,7 @@ void *calc( void *param)
 	int j;
 	myid = (long) param;
 	int inum;
-	int jnum = 7;
+	int jnum = gnum;
 	int sum;
 	
 	
@@ -100,7 +100,7 @@ int main()
 	long t;
 	void *status;
 	int i, j, k, num, sum;
-	int numberGens = 20;
+	int numberGens = 50;
 	
 	zero_grid(gnum, grid2);	
 	
@@ -109,12 +109,12 @@ int main()
 	{
 		for (j = 1; j < gnum; j++)
 		{
-			num = rand()%15;
+			num = rand()%10;
 			grid[i][j] = num;
 		}
 	}
 	
-	printf("------ Gen 1 ------\n");
+	printf("------ Gen 0 ------\n");
 	print_grid(gnum, grid);
 	
 	//initialize work grid
@@ -141,7 +141,7 @@ for(k=2; k<numberGens+1; k++)
 			}
 		}	
 	
-	printf("\n----- Gen %d -----\n", k);
+	printf("\n----- Gen %d -----\n", k-1);
 	print_grid(gnum, grid);
 }
 	return 0;
