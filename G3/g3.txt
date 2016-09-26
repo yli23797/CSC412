@@ -1,0 +1,48 @@
+
+G3: Matrix Multiplication -  3 ways
+
+   Implement Matrix Multiplication
+   Due:  9/28
+
+   Submit: 
+     a) Dropbox comment: location of code, group names
+     b) Dropbox file:  Word file
+            Compare solutions - ease of writing
+                              - performance
+                              - timing & speed-up tests
+     c) Class account:
+           Directory:  MatMul
+              mmseq.c         <-- sequential
+              mmpthread.c     <-- pthread
+              mmomp.c         <-- openmp
+              README          <-- how to build, run, test
+                                  group names 
+----------------------------------------------------------------
+Group programming project: matrix multiplication
+  Implement sequential
+  Implement parallel - ptheads
+  Implement parallel - OpenMP
+
+
+For well chosen square matrix, run timing tests
+   - AFTER you verify correctness & fair testing
+
+Vary size of matrix as well as number of threads
+ -- if you go with "not square" make sure the
+      matrix dimensions are appropriate
+
+Draw some conclusions, make observations, ...
+
+Can just use   %  time  ./a.out
+   ** IF you are fair in initialization, set-up, etc.
+
+
+Matrix can be provided
+ - sample data files
+ - random generation
+ - hard coded  (bad idea for big matrix)
+* Make it clear in your README how to test it
+ - Matrix sizes
+ - Matrix values
+
+
