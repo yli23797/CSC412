@@ -4,6 +4,8 @@
 #include <limits.h>
 #include <pthread.h>
 
+#define THREAD_NUM 100;
+
 void CheckCmdArg( int argc )
 {
     if ( argc != 2 )
@@ -57,6 +59,11 @@ int** readFIle( char* filename, int* rowNum, int* columnNum )
     int** matrix;
 
     dataFile = fopen( filename, "r" );
+    if( dataFile == NULL )
+    {
+        printf("ERROR: Can't open %s\n", filename );
+        exit(1);
+    }
 
     fscanf( dataFile, "%d", *&rowNum );
     fscanf( dataFile, "%d", *&columnNum );
@@ -99,7 +106,13 @@ void outPutMatrix( int **matrix, int rowNum, int columnNum )
 
     outFileName( filename, rowNum, columnNum );
 
+
     outFile = fopen( filename, "w+" );
+    if( outFile == NULL )
+    {
+        printf("ERROR: Can't open %s\n", filename );
+        exit(1);
+    }
 
     fprintf( outFile, "%d ", rowNum );
     fprintf( outFile, "%d\n", columnNum );
@@ -114,6 +127,19 @@ void outPutMatrix( int **matrix, int rowNum, int columnNum )
     }
 
     fclose( outFile );
+}
+
+int cellResult( int** matrix1, int** matrix2, int row, int column )
+{
+    int reslut;
+    for( int i = 0; i < row; i++ )
+    {
+        for( int j = 0; j < column; j++ )
+        {
+            reslut += matrix1*matrix2;
+        }
+    }
+    return result;
 }
 
 int main( int argc, char *argv[] )
