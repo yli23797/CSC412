@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <limits.h>
 #include <pthread.h>
 
 void CheckCmdArg( int argc )
 {
-    if ( argc != 3 )
+    if ( argc != 2 )
     {
         printf( "ERROR: Please enter command line arguement.\n" );
         printf( "usage: ./prog matrix1 matrix2 \n" );
@@ -13,11 +14,11 @@ void CheckCmdArg( int argc )
     }
 }
 
-int **getArray( int n, int m )
+int** getArray( int n, int m )
 {
     int i;
-    int **table;
-    table = malloc( n * sizeof( int* ));
+    int** table;
+    table = malloc( n * sizeof(int*) );
 
     //check if allocation succeeded.
     if( table == NULL )
@@ -49,11 +50,70 @@ void free2Darray( int** p, int N )
     free(p);
 }
 
-int **readFIle( char* filename, int& n, int& m )
+int** readFIle( char* filename, int* rowNum, int* columnNum )
 {
-    FILE *dataFile;
+    FILE* dataFile;
+
+    int** matrix;
 
     dataFile = fopen( filename, "r" );
+
+    fscanf( dataFile, "%d", *&rowNum );
+    fscanf( dataFile, "%d", *&columnNum );
+
+    matrix = getArray( *rowNum, *columnNum );
+
+    // This code assume the input format is correct.
+    for( int i = 0; i < *rowNum; i++ )
+    {
+        for( int j = 0; j < *columnNum; j++ )
+        {
+            fscanf( dataFile, "%d", &matrix[i][j] );
+        }
+    }
+    fclose( dataFile );
+    return matrix;
+}
+
+void outFileName( char *temp, int row, int column )
+{
+    char filename[80] = "testResult/result";
+    char rowstr[50] = "";
+    char colstr[50] = "";
+    sprintf( rowstr, "%d", row );
+    sprintf( colstr, "%d", column );
+
+    strcat( filename, rowstr );
+    strcat( filename, "_" );
+    strcat( filename, colstr );
+    strcat( filename, "_pthread" );
+    strcat( filename, "\0" );
+
+    strcpy( temp, filename );
+}
+
+void outPutMatrix( int **matrix, int rowNum, int columnNum )
+{
+    FILE* outFile;
+    char filename[80] = "";
+
+    outFileName( filename, rowNum, columnNum );
+
+    outFile = fopen( filename, "w+" );
+
+    fprintf( outFile, "%d ", rowNum );
+    fprintf( outFile, "%d\n", columnNum );
+
+    for( int i = 0; i < rowNum; i++)
+    {
+        for( int j = 0; j < columnNum; j++ )
+        {
+            fprintf( outFile, "%d ", matrix[i][j] );
+        }
+        fprintf( outFile, "\n" );
+    }
+
+    fclose( outFile );
 }
 
 int main( int argc, char *argv[] )
@@ -62,10 +122,22 @@ int main( int argc, char *argv[] )
 
     int **matrix1;
     int **matrix2;
-    int size1;
-    int size2;
+    int rowNum1;
+    int columnNum1;
+    int rowNum2;
+    int columnNum2;
 
-    //free2Darray( matrix1, size1 );
-    //free2Darray( matrix2, size2 );
+    matrix1 = readFIle( argv[1], &rowNum1, &columnNum1 );
+    matrix2 = readFIle( argv[2], &rowNum2, &columnNum2 );
+
+
+    // matrix multiplication code here.
+
+    outPutMatrix( matrix1, rowNum1, columnNum1 );
+
+    // free memory
+    free2Darray( matrix1, rowNum1 );
+    free2Darray( matrix2, rowNum2 );
+
     return 0;
 }
