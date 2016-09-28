@@ -5,10 +5,24 @@ Requires the following libraries (use pip to install):
 
 numpy
 hypothesis
+
+HOW TO GET THIS WORKING ON DSUNIX:
+
+Enter these into your shell:
+cd ~/
+wget https://bootstrap.pypa.io/ez_setup.py -O - | python - --user
+cd ./local/bin
+./easy_install --user pip
+./pip install --user numpy hypothesis hypothesis[numpy]
+
+Once you've done all that, autotest.py should run like any other script/executable.
+Compile your program, enter "./autotest.py ./myprogram.out", and it should tell you if there's anything wrong with your
+program.
+
+
 """
 import glob
 
-import functools
 import numpy
 import argparse
 import os
@@ -18,9 +32,9 @@ import subprocess
 import hypothesis
 import hypothesis.extra.numpy
 
-#the wrong way to do Python 3 to 2 compatibility
 import time
 
+#the wrong way to do Python 3 to 2 compatibility
 try:
     raw_input = input
 except:
@@ -106,21 +120,11 @@ def run_test(target, matrixa, matrixb, verbose=False):
         os.remove("testmatrixb")
         pass
 
-@hypothesis.strategies.composite
-def arbitrary_equal_size_matrices(draw, x=hypothesis.strategies.integers(), y=hypothesis.strategies.integers()):
-    matrix1 = draw(hypothesis.extra.numpy.arrays(int, (x, y), hypothesis.strategies.integers()))
-    matrix2 = draw(hypothesis.extra.numpy.arrays(int, (x, y), hypothesis.strategies.integers()))
-    hypothesis.assume(matrix1.shape == matrix2.shape)
-    return matrix1, matrix2
-
-#Just some arbitrary matrices for now, fanciness comes later.
-#matrixa = numpy.array([ [1,2,3], [2,1,2], [1,1,1] ] )
-#matrixb = numpy.array([[1,2,3], [2,1,2], [1,1,1]])
-
-print("\nI'm about to delete everything in the /testResult directory so that I know the only file in "
-      "there is the output of your program. "
-      "\nPress Ctrl-C now if this isn't okay...")
-time.sleep(1)
+if glob.glob(os.path.join("testResult", "*")):
+    print("\nI'm about to delete everything in the /testResult directory so that I know the only file in "
+          "there is the output of your program. "
+          "\nPress Ctrl-C now if this isn't okay...")
+    time.sleep(3)
 
 for thepath in glob.iglob(os.path.join("testResult", "*")):
     os.remove(thepath)
@@ -137,3 +141,10 @@ try:
 except AssertionError:
     print("Your program is not correct! The 'falsifying example' above is two matrices that your program does not "
           "multiply correctly. There's nothing I can do about the formatting being ugly unfortunately. :(")
+except OSError:
+    print("Something went wrong: make sure you put ./ in front of your program just like if you were trying to run it"
+          " directly.")
+    raise
+else:
+    print("If you didn't get any other error messages (such as 'your program crashed'...) then as far as I can tell"
+          "your program works perfectly!")
