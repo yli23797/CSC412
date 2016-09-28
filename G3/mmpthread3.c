@@ -2,10 +2,10 @@
 #include <pthread.h>
 #include <stdlib.h>
 
-#define N 4
-#define P 4
-#define M 4
-#define NUM_THREADS 4
+#define N 2000
+#define P 2000
+#define M 2000
+#define NUM_THREADS 2000
 
 int A[N][P]; // op1
 int B[P][M]; // op2
@@ -64,7 +64,7 @@ int main()
 		}
 	}
 
-	printf("A: \n");
+	/*printf("A: \n");
 	for(i = 0; i < N; i++)
 	{
 		for(k=0; k < P; k++)
@@ -85,6 +85,7 @@ int main()
 		printf("\n");
 	}
 	printf("\n");
+	*/
 	
 	for (t=0; t<NUM_THREADS; t++)
 		{
