@@ -4,11 +4,51 @@
 #include <limits.h>
 #include <pthread.h>
 
-#define THREAD_NUM 100;
+#define THREAD_NUM 10;
+
+typedef struct
+{
+    int rows1;
+    int cols1;
+    int rows2;
+    int cols2;
+    int** matrix1;
+    int** matrix2;
+    int** reslut;
+} matrixMul;
+
+void CheckCmdArg( int argc );
+int** getArray( int n, int m );
+void free2Darray( int** p, int N );
+matrixMul readFIle( char* filename1, char* filename2 );
+void outPutMatrix( int** matrix, int rowNum, int columnNum );
+void outFileName( char* temp, int row, int column );
+
+int main( int argc, char *argv[] )
+{
+    int i, j, k;
+    CheckCmdArg( argc );
+    matrixMul matrices = readFIle( argv[1], argv[2] );
+
+    pthread_t tid[THREAD_NUM];
+    pthread_attr_t attr;
+    pthread_attr_init( &attr );
+
+    outPutMatrix( matrices.matrix1, matrices.rows1, matrices.cols2);
+
+    for( i = 0; i < THREAD_NUM; i++ )
+    {
+        pthread_join( THREAD_NUM, NULL );
+    }
+    free2Darray( matrices.matrix1, matrices.rows1 );
+    free2Darray( matrices.matrix2, matrices.rows2 );
+    free2Darray( matrices.result, matrices.rows1 );
+    return 0;
+}
 
 void CheckCmdArg( int argc )
 {
-    if ( argc != 2 )
+    if ( argc != 3 )
     {
         printf( "ERROR: Please enter command line arguement.\n" );
         printf( "usage: ./prog matrix1 matrix2 \n" );
@@ -52,33 +92,55 @@ void free2Darray( int** p, int N )
     free(p);
 }
 
-int** readFIle( char* filename, int* rowNum, int* columnNum )
+matrixMul readFIle( char* filename1, char* filename2 )
 {
+    matrixMul matrix;
+
     FILE* dataFile;
+    FILE* dataFile2;
 
-    int** matrix;
-
-    dataFile = fopen( filename, "r" );
+    dataFile = fopen( filename1, "r" );
     if( dataFile == NULL )
     {
-        printf("ERROR: Can't open %s\n", filename );
+        printf("ERROR: Can't open %s\n", filename1 );
         exit(1);
     }
 
-    fscanf( dataFile, "%d", *&rowNum );
-    fscanf( dataFile, "%d", *&columnNum );
+    dataFile2 = fopen( filename2, "r" );
+    if( dataFile2 == NULL )
+    {
+        printf("ERROR: Can't open %s\n", filename2 );
+        exit(1);
+    }
 
-    matrix = getArray( *rowNum, *columnNum );
+
+    fscanf( dataFile, "%d", &(matrix.rows1) );
+    fscanf( dataFile, "%d", &(matrix.cols1) );
+
+    fscanf( dataFile2, "%d", &(matrix.rows2) );
+    fscanf( dataFile2, "%d", &(matrix.cols2) );
+
+    matrix.matrix1 = getArray( matrix.rows1, matrix.cols1 );
+    matrix.matrix2 = getArray( matrix.rows2, matrix.cols2 );
+    matrix.result = getArray( matrix.row1, matrix.cols2 );
 
     // This code assume the input format is correct.
-    for( int i = 0; i < *rowNum; i++ )
+    for( int i = 0; i < matrix.rows1; i++ )
     {
-        for( int j = 0; j < *columnNum; j++ )
+        for( int j = 0; j < matrix.cols1; j++ )
         {
-            fscanf( dataFile, "%d", &matrix[i][j] );
+            fscanf( dataFile, "%d", &(matrix.matrix1[i][j]) );
+        }
+    }
+    for( int i = 0; i < matrix.rows2; i++ )
+    {
+        for( int j = 0; j < matrix.cols2; j++ )
+        {
+            fscanf( dataFile2, "%d", &(matrix.matrix2[i][j]) );
         }
     }
     fclose( dataFile );
+    fclose( dataFile2 );
     return matrix;
 }
 
@@ -127,43 +189,4 @@ void outPutMatrix( int **matrix, int rowNum, int columnNum )
     }
 
     fclose( outFile );
-}
-
-int cellResult( int** matrix1, int** matrix2, int row, int column )
-{
-    int reslut;
-    for( int i = 0; i < row; i++ )
-    {
-        for( int j = 0; j < column; j++ )
-        {
-            reslut += matrix1*matrix2;
-        }
-    }
-    return result;
-}
-
-int main( int argc, char *argv[] )
-{
-    CheckCmdArg( argc );
-
-    int **matrix1;
-    int **matrix2;
-    int rowNum1;
-    int columnNum1;
-    int rowNum2;
-    int columnNum2;
-
-    matrix1 = readFIle( argv[1], &rowNum1, &columnNum1 );
-    matrix2 = readFIle( argv[2], &rowNum2, &columnNum2 );
-
-
-    // matrix multiplication code here.
-
-    outPutMatrix( matrix1, rowNum1, columnNum1 );
-
-    // free memory
-    free2Darray( matrix1, rowNum1 );
-    free2Darray( matrix2, rowNum2 );
-
-    return 0;
 }

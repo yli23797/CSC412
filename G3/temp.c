@@ -6,7 +6,7 @@
 
 void CheckCmdArg( int argc )
 {
-    if ( argc != 2 )
+    if ( argc != 3 )
     {
         printf( "ERROR: Please enter command line arguement.\n" );
         printf( "usage: ./prog matrix1 matrix2 \n" );
@@ -91,7 +91,7 @@ void outFileName( char *temp, int row, int column )
     strcat( filename, rowstr );
     strcat( filename, "_" );
     strcat( filename, colstr );
-    strcat( filename, "_pthread" );
+    strcat( filename, "_seq" );
     strcat( filename, "\0" );
 
     strcpy( temp, filename );
@@ -127,12 +127,41 @@ void outPutMatrix( int **matrix, int rowNum, int columnNum )
     fclose( outFile );
 }
 
+int cellResult( int** matrix1, int** matrix2, int row, int column )
+{
+    int result;
+    for( int i = 0; i < row; i++ )
+    {
+        for( int j = 0; j < column; j++ )
+        {
+            result += matrix1[i][j]*matrix2[i][j];
+        }
+    }
+    return result;
+}
+
+int** seqMatrixMul( int** matrix1, int** matrix2, int row, int column )
+{
+    int** resultMatrix = getArray( row, column );
+
+    int i, j;
+    for( i = 0; i < row; i++ )
+    {
+        for( j = 0; j < column; j++ )
+        {
+            resultMatrix[i][j] = cellResult( matrix1, matrix2, row, column );
+        }
+    }
+    return resultMatrix;
+}
+
 int main( int argc, char *argv[] )
 {
     CheckCmdArg( argc );
 
     int **matrix1;
     int **matrix2;
+    int** result;
     int rowNum1;
     int columnNum1;
     int rowNum2;
@@ -140,11 +169,9 @@ int main( int argc, char *argv[] )
 
     matrix1 = readFIle( argv[1], &rowNum1, &columnNum1 );
     matrix2 = readFIle( argv[2], &rowNum2, &columnNum2 );
+    result = seqMatrixMul( matrix1, matrix2, rowNum1, columnNum2 );
 
-
-    // matrix multiplication code here.
-
-    outPutMatrix( matrix1, rowNum1, columnNum1 );
+    outPutMatrix( result, rowNum1, columnNum2 );
 
     // free memory
     free2Darray( matrix1, rowNum1 );
