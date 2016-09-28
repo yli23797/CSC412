@@ -85,7 +85,7 @@ int** getArray( int n, int m )
 void free2Darray( int** p, int N )
 {
     int i;
-    for(i = 0 ; i < N ; i++)
+    for( i = 0 ; i < N ; i++ )
     {
         free(p[i]);
     }
@@ -125,16 +125,17 @@ matrixMul readFIle( char* filename1, char* filename2 )
     matrix.result = getArray( matrix.row1, matrix.cols2 );
 
     // This code assume the input format is correct.
-    for( int i = 0; i < matrix.rows1; i++ )
+    int i, j;
+    for( i = 0; i < matrix.rows1; i++ )
     {
-        for( int j = 0; j < matrix.cols1; j++ )
+        for( j = 0; j < matrix.cols1; j++ )
         {
             fscanf( dataFile, "%d", &(matrix.matrix1[i][j]) );
         }
     }
-    for( int i = 0; i < matrix.rows2; i++ )
+    for( i = 0; i < matrix.rows2; i++ )
     {
-        for( int j = 0; j < matrix.cols2; j++ )
+        for( j = 0; j < matrix.cols2; j++ )
         {
             fscanf( dataFile2, "%d", &(matrix.matrix2[i][j]) );
         }
@@ -179,9 +180,10 @@ void outPutMatrix( int **matrix, int rowNum, int columnNum )
     fprintf( outFile, "%d ", rowNum );
     fprintf( outFile, "%d\n", columnNum );
 
-    for( int i = 0; i < rowNum; i++)
+    int i, j;
+    for( i = 0; i < rowNum; i++)
     {
-        for( int j = 0; j < columnNum; j++ )
+        for( j = 0; j < columnNum; j++ )
         {
             fprintf( outFile, "%d ", matrix[i][j] );
         }
