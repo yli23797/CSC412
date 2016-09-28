@@ -4,7 +4,7 @@
 #include <limits.h>
 #include <pthread.h>
 
-#define THREAD_NUM 10;
+#define THREAD_NUM 2
 
 typedef struct
 {
@@ -14,7 +14,7 @@ typedef struct
     int cols2;
     int** matrix1;
     int** matrix2;
-    int** reslut;
+    int** result;
 } matrixMul;
 
 void CheckCmdArg( int argc );
@@ -23,23 +23,37 @@ void free2Darray( int** p, int N );
 matrixMul readFIle( char* filename1, char* filename2 );
 void outPutMatrix( int** matrix, int rowNum, int columnNum );
 void outFileName( char* temp, int row, int column );
+void *calc( void *param);
+
+matrixMul matrices;
 
 int main( int argc, char *argv[] )
 {
     int i, j, k;
     CheckCmdArg( argc );
-    matrixMul matrices = readFIle( argv[1], argv[2] );
+    matrices = readFIle( argv[1], argv[2] );
+    void* status;
+    //outPutMatrix( matrices.matrix1, matrices.rows1, matrices.cols2);
 
-    pthread_t tid[THREAD_NUM];
+    pthread_t tids[THREAD_NUM];
     pthread_attr_t attr;
     pthread_attr_init( &attr );
 
-    outPutMatrix( matrices.matrix1, matrices.rows1, matrices.cols2);
-
-    for( i = 0; i < THREAD_NUM; i++ )
+    for( i = 0; i < THREAD_NUM; i++)
     {
-        pthread_join( THREAD_NUM, NULL );
+        pthread_create( &tids[i], NULL, calc, (void*)i+1);
     }
+
+    for( i = 0; i < THREAD_NUM; i++)
+    {
+        // how to check if thread is able to be join? 
+        // right now it crashed the program if the matrix is
+        // too small and THREAD_NUM is too big.
+        pthread_join( tids[i], &status );
+    }
+
+    outPutMatrix( matrices.result, matrices.rows1, matrices.cols2);
+
     free2Darray( matrices.matrix1, matrices.rows1 );
     free2Darray( matrices.matrix2, matrices.rows2 );
     free2Darray( matrices.result, matrices.rows1 );
@@ -122,7 +136,7 @@ matrixMul readFIle( char* filename1, char* filename2 )
 
     matrix.matrix1 = getArray( matrix.rows1, matrix.cols1 );
     matrix.matrix2 = getArray( matrix.rows2, matrix.cols2 );
-    matrix.result = getArray( matrix.row1, matrix.cols2 );
+    matrix.result = getArray( matrix.rows1, matrix.cols2 );
 
     // This code assume the input format is correct.
     int i, j;
@@ -191,4 +205,25 @@ void outPutMatrix( int **matrix, int rowNum, int columnNum )
     }
 
     fclose( outFile );
+}
+
+void *calc( void *param)
+{
+    int i, j, k;
+    int t = (int)param;
+
+
+    for(i = t - 1; i < t; i++)
+    {
+        //printf("%d row number\n", i);
+        for(j = 0; j < matrices.rows1; j++)
+        {
+            for(k = 0; k < matrices.cols2; k++)
+            {
+                matrices.result[i][j] += matrices.matrix1[i][k] * matrices.matrix2[k][j];
+                //printf("C[%d][%d] = %d\n", myid, i, j, C[i][j]);  
+            }
+        }
+    }
+    pthread_exit(NULL); 
 }
