@@ -25,46 +25,46 @@ void out_of_mem(Matrix);
 Matrix new_matrix(int rows, int cols){
     Matrix m = (Matrix)malloc(sizeof(struct matrix));
     if (m == NULL){
-		out_of_mem(m);
-	}
+        out_of_mem(m);
+    }
     m->rows = rows;
     m->cols = cols;
     m->array = (int **)malloc(rows * sizeof(int *));
     if (m->array == NULL){
-		out_of_mem(m);
-	}
+        out_of_mem(m);
+    }
     int i, j;
     for (i = 0; i < rows; ++i){
         m->array[i] = (int *)malloc(cols * sizeof(int));
         if (m->array[i] == NULL){
-			out_of_mem(m);
-		}
+            out_of_mem(m);
+        }
     }
     return m;
 }
 
 void delete_matrix(Matrix m){
-	//NB: this can be used on a matrix that didn't allocate properly, and even on a NULL pointer
+    //NB: this can be used on a matrix that didn't allocate properly, and even on a NULL pointer
     int i;
     if (m != NULL){
-		if (m->array != NULL){
-			for (i = 0; i < m->rows; ++i){
-				if( m->array[i] != NULL){
-					free(m->array[i]);
-				}
-			}
-			free(m->array);
-		}
-		free(m);
-	}
+        if (m->array != NULL){
+            for (i = 0; i < m->rows; ++i){
+                if( m->array[i] != NULL){
+                    free(m->array[i]);
+                }
+            }
+            free(m->array);
+        }
+        free(m);
+    }
 }
 
 void out_of_mem(Matrix m){
-	//Currently, this can cause a memory leak since it only frees the current matrix.
-	//I'm considering adding a structure that holds pointers to all allocated objects, so all can be freed.
-	printf( "ERROR: Unable to allocate memory.\n" );
-	delete_matrix(m);
-	exit(NO_MEM);
+    //Currently, this can cause a memory leak since it only frees the current matrix.
+    //I'm considering adding a structure that holds pointers to all allocated objects, so all can be freed.
+    printf( "ERROR: Unable to allocate memory.\n" );
+    delete_matrix(m);
+    exit(NO_MEM);
 }
 
 void randomize_matrix(Matrix m, int modulo){
@@ -184,55 +184,55 @@ void outPutMatrix( Matrix m )
 
 
 void interactive_mode(){
-	int rowNum1, columnNum1, rowNum2, columnNum2, mod;
-	Matrix a, b;
-	
-	puts("Running in interactive mode.");
-	puts("Enter the number of rows for the first matrix");
-	scanf("%d", &rowNum1);
-	puts("Enter the number of columns for the first matrix");
-	scanf(" %d", &columnNum1);
-	puts("Enter the number of rows for the second matrix");
-	scanf(" %d", &rowNum2);
-	puts("Enter the number of columns for the second matrix");
-	scanf(" %d", &columnNum2);
-	a = new_matrix(rowNum1, columnNum1);
-	b = new_matrix(rowNum2, columnNum2);
-	puts("The matrices will be populated with random integers.\n Choose the modulo for the first matrix.");
-	scanf(" %d", &mod);
-	randomize_matrix(a, mod);
-	puts("Choose the modulo for the second matrix.");
-	scanf(" %d", &mod);
-	randomize_matrix(b, mod);
+    int rowNum1, columnNum1, rowNum2, columnNum2, mod;
+    Matrix a, b;
+    
+    puts("Running in interactive mode.");
+    puts("Enter the number of rows for the first matrix");
+    scanf("%d", &rowNum1);
+    puts("Enter the number of columns for the first matrix");
+    scanf(" %d", &columnNum1);
+    puts("Enter the number of rows for the second matrix");
+    scanf(" %d", &rowNum2);
+    puts("Enter the number of columns for the second matrix");
+    scanf(" %d", &columnNum2);
+    a = new_matrix(rowNum1, columnNum1);
+    b = new_matrix(rowNum2, columnNum2);
+    puts("The matrices will be populated with random integers.\n Choose the modulo for the first matrix.");
+    scanf(" %d", &mod);
+    randomize_matrix(a, mod);
+    puts("Choose the modulo for the second matrix.");
+    scanf(" %d", &mod);
+    randomize_matrix(b, mod);
 
 
-	printf("\n-----Matrix A-----\n");
-	print_matrix(a);
-	printf("\n-----Matrix B-----\n");
-	print_matrix(b);
+    printf("\n-----Matrix A-----\n");
+    print_matrix(a);
+    printf("\n-----Matrix B-----\n");
+    print_matrix(b);
 
-	omp_set_num_threads(omp_get_max_threads());
-	Matrix c = multiply(a, b);
+    omp_set_num_threads(omp_get_max_threads());
+    Matrix c = multiply(a, b);
 
-	//You only get here if there were no issues allocating memory.  This is why there can be leaks.
-	//I intend to fix this.
-	delete_matrix(a);
-	delete_matrix(b);
-	if (c != 0){
-		printf("\n-----Matrix C-----\n");
-		print_matrix(c);
-		delete_matrix(c);
+    //You only get here if there were no issues allocating memory.  This is why there can be leaks.
+    //I intend to fix this.
+    delete_matrix(a);
+    delete_matrix(b);
+    if (c != 0){
+        printf("\n-----Matrix C-----\n");
+        print_matrix(c);
+        delete_matrix(c);
     }
 }
 
 void batch_mode(char* argv[]){
-	
+    
     int rowNum1;
     int columnNum1;
     int rowNum2;
     int columnNum2;
     
-	Matrix matrix1 = readfile( argv[1], &rowNum1, &columnNum1 );
+    Matrix matrix1 = readfile( argv[1], &rowNum1, &columnNum1 );
     Matrix matrix2 = readfile( argv[2], &rowNum2, &columnNum2 );
 
     // matrix multiplication code here.
@@ -247,21 +247,19 @@ void batch_mode(char* argv[]){
 }
 
 void CheckCmdArg( int argc, char* argv[] ){
-	int i;
-	if (argc != 3){
-		for (i = 0; i < argc; ++i){
-			if (strcmp("-i", argv[i]) == 0 || strcmp("--interactive", argv[i]) == 0){
-				interactive_mode();
-			}
-			else{
-				printf( "usage: %s matrix1 matrix2 \n", argv[0] );
-				exit(BAD_ARGS);
-			}
-		}
-	}
-	else{
-		batch_mode(argv);
-	}
+    int i;
+    if (argc != 3){
+        for (i = 0; i < argc; ++i){
+            if (strcmp("-i", argv[i]) == 0 || strcmp("--interactive", argv[i]) == 0){
+                return interactive_mode();
+            }
+        }
+        printf( "usage: %s matrix1 matrix2 \n", argv[0] );
+        exit(BAD_ARGS);
+    }
+    else{
+        batch_mode(argv);
+    }
 }
 
 int main(int argc, char* argv[]){
