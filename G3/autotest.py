@@ -43,6 +43,8 @@ except:
 #This just handles the command line arguments, don't worry about it.
 parser=argparse.ArgumentParser(description="Automatically test matrix multiplication programs.")
 parser.add_argument('target', type=str, help="The path to the executable to be tested.")
+parser.add_argument('--verbose', help="Print the test cases as they're run.", action="store_true")
+parser.add_argument('--longlong', help="Allow autotest to generate matrices whose values are too large for a 32-bit signed int", action="store_true")
 args=parser.parse_args()
 
 
@@ -130,15 +132,16 @@ for thepath in glob.iglob(os.path.join("testResult", "*")):
     os.remove(thepath)
 
 print("\n\nRunning test...")
+range = 0x8000000000000000 if args.longlong else 0x7FFFFFFF
 try:
-    @hypothesis.given( hypothesis.extra.numpy.arrays(int, (3, 3) ), hypothesis.extra.numpy.arrays(int, (3, 3) ) )
+    @hypothesis.given( hypothesis.extra.numpy.arrays(int, (2, 2) ), hypothesis.extra.numpy.arrays(int, (2, 2) ) )
     def test(matrix1, matrix2):
         hypothesis.assume(matrix1.shape == matrix2.shape)
         #Make sure we won't have any integer overflow
         for therow in matrix1.dot(matrix2):
             for theval in therow:
-                hypothesis.assume(-0x7FFFFFFF < theval < 0x7FFFFFFF)
-        run_test(args.target, matrix1, matrix2)
+                hypothesis.assume(-range < theval < range)
+        run_test(args.target, matrix1, matrix2, args.verbose)
     test()
 
 
