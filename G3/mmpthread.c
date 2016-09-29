@@ -220,12 +220,13 @@ void *calc( void *param)
     int t = (int)param;
 
 
-    for(i = t - 1; i < t; i++)
+    for(i = 0; i < matrices.rows1; i++)
     {
         //printf("%d row number\n", i);
-        for(j = 0; j < matrices.rows1; j++)
+        for(j = 0; j < matrices.cols2; j++)
         {
-            for(k = 0; k < matrices.cols2; k++)
+            matrices.result[i][j] = 0;
+            for(k = 0; k < matrices.cols1; k++)
             {
                 matrices.result[i][j] += matrices.matrix1[i][k] * matrices.matrix2[k][j];
                 //printf("C[%d][%d] = %d\n", myid, i, j, C[i][j]);  
