@@ -39,12 +39,18 @@ int main( int argc, char *argv[] )
     pthread_attr_t attr;
     pthread_attr_init( &attr );
 
-    for( i = 0; i < THREAD_NUM; i++)
+    int join_Thread = THREAD_NUM;
+
+    if( THREAD_NUM > matrices.rows1*matrices.cols2 )
+    {
+        join_Thread =  matrices.rows1*matrices.cols2;
+    }
+    for( i = 0; i < join_Thread; i++)
     {
         pthread_create( &tids[i], NULL, calc, (void*)i+1);
     }
 
-    for( i = 0; i < THREAD_NUM; i++)
+    for( i = 0; i < join_Thread; i++)
     {
         // how to check if thread is able to be join? 
         // right now it crashed the program if the matrix is
@@ -154,6 +160,7 @@ matrixMul readFIle( char* filename1, char* filename2 )
             fscanf( dataFile2, "%d", &(matrix.matrix2[i][j]) );
         }
     }
+
     fclose( dataFile );
     fclose( dataFile2 );
     return matrix;
