@@ -134,6 +134,10 @@ try:
     @hypothesis.given( hypothesis.extra.numpy.arrays(int, (3, 3) ), hypothesis.extra.numpy.arrays(int, (3, 3) ) )
     def test(matrix1, matrix2):
         hypothesis.assume(matrix1.shape == matrix2.shape)
+        #Make sure we won't have any integer overflow
+        for therow in matrix1.dot(matrix2):
+            for theval in therow:
+                hypothesis.assume(theval < 0x7FFFFFFF)
         run_test(args.target, matrix1, matrix2)
     test()
 
@@ -147,4 +151,4 @@ except OSError:
     raise
 else:
     print("If you didn't get any other error messages (such as 'your program crashed'...) then as far as I can tell"
-          "your program works perfectly!")
+          " your program works perfectly!")
