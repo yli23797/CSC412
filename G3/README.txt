@@ -55,3 +55,6 @@ cd ./local/bin
 
 Run python autotest.py ./<program>
 
+Use --verbose flag to see test cases run, and --longlong flag to use 63-bit test cases (will cause integer overflow
+errors on all working code we have though.)
+
