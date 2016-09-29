@@ -127,15 +127,12 @@ void outPutMatrix( int **matrix, int rowNum, int columnNum )
     fclose( outFile );
 }
 
-int cellResult( int** matrix1, int** matrix2, int row, int column )
+int cellResult( int** matrix1, int** matrix2, int row, int column, int size )
 {
     int result;
-    for( int i = 0; i < row; i++ )
+    for( int i = 0; i < size; i++ )
     {
-        for( int j = 0; j < column; j++ )
-        {
-            result += matrix1[i][j]*matrix2[i][j];
-        }
+        result += matrix1[row][i]*matrix2[i][column];
     }
     return result;
 }
@@ -149,7 +146,7 @@ int** seqMatrixMul( int** matrix1, int** matrix2, int row, int column )
     {
         for( j = 0; j < column; j++ )
         {
-            resultMatrix[i][j] = cellResult( matrix1, matrix2, row, column );
+            resultMatrix[i][j] = cellResult( matrix1, matrix2, i, j, row );
         }
     }
     return resultMatrix;
