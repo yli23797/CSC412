@@ -41,6 +41,9 @@ for pthread, or with the -i or --interactive flag.
 
  autotest.py
 -------------
+Requires Python (3 or 2.7) and the numpy and hypothesis packages.
+Install with "pip numpy hypothesis hypothesis[numpy]" if you have pip.
+
 HOW TO GET THIS WORKING ON DSUNIX:
 
 Enter these into your shell:
