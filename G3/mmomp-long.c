@@ -85,7 +85,7 @@ void print_matrix(Matrix m){
     int i, j;
     for (i = 0; i < m->rows; ++i){
         for (j = 0; j < m->cols; ++j){
-            printf(" %3lld", m->array[i][j]);
+            printf(" %3d", m->array[i][j]);
         }
         puts("");
     }
@@ -180,7 +180,7 @@ void outPutMatrix( Matrix m )
     {
         for( j = 0; j < m->cols; j++ )
         {
-            fprintf( outFile, "%lld ", m->array[i][j] );
+            fprintf( outFile, "%d ", m->array[i][j] );
         }
         fprintf( outFile, "\n" );
     }
