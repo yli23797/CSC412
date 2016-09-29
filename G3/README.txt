@@ -41,6 +41,14 @@ for pthread, or with the -i or --interactive flag.
 
  autotest.py
 -------------
-Install python3, numpy, and hypothesis if needed.
-Run python3 autotest.py ./<program>
+HOW TO GET THIS WORKING ON DSUNIX:
+
+Enter these into your shell:
+cd ~/
+wget https://bootstrap.pypa.io/ez_setup.py -O - | python - --user
+cd ./local/bin
+./easy_install --user pip
+./pip install --user numpy hypothesis hypothesis[numpy]
+
+Run python autotest.py ./<program>
 
