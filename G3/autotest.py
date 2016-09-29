@@ -137,7 +137,7 @@ try:
         #Make sure we won't have any integer overflow
         for therow in matrix1.dot(matrix2):
             for theval in therow:
-                hypothesis.assume(theval < 0x7FFFFFFF)
+                hypothesis.assume(-0x7FFFFFFF < theval < 0x7FFFFFFF)
         run_test(args.target, matrix1, matrix2)
     test()
 
