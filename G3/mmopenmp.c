@@ -2,6 +2,11 @@
  *
  * Build with -fopenmp.
  *
+ * Run with -i or --interactive for interactive mode.
+ *
+ * Keep in mind that all matrices are using 32-bit signed integers.
+ *
+ *
 **/
 
 #include <stdio.h>
