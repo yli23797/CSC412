@@ -132,7 +132,7 @@ for thepath in glob.iglob(os.path.join("testResult", "*")):
     os.remove(thepath)
 
 print("\n\nRunning test...")
-range = 0x8000000000000000 if args.longlong else 0x7FFFFFFF
+range = (2**63-1) if args.longlong else 0x7FFFFFFF
 try:
     @hypothesis.given( hypothesis.extra.numpy.arrays(int, (2, 2) ), hypothesis.extra.numpy.arrays(int, (2, 2) ) )
     def test(matrix1, matrix2):
