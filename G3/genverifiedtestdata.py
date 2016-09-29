@@ -27,8 +27,8 @@ if __name__=="__main__":
     except FileExistsError:
         pass
     for t in range(5, 100, 5):
-        A = numpy.random.randint(-0x7FFFFFFF, 0x7FFFFFFF, (t, t))
-        B = numpy.random.randint(-0x7FFFFFFF, 0x7FFFFFFF, (t, t))
+        A = numpy.random.randint(-5, 5, (t, t))
+        B = numpy.random.randint(-5, 5, (t, t))
         Result = A.dot(B)
 
         write_matrix(os.path.join("verifiedtestdata", "{0}A".format(t)), A)
