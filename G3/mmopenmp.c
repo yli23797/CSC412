@@ -94,12 +94,12 @@ Matrix multiply(Matrix a, Matrix b){
     Matrix c = new_matrix(a->rows, b->cols);
     int i, j, k, result;
     #pragma omp parallel for private(i, j, k, result) shared(a, b, c)
-    for (int i = 0; i < c->rows; ++i){
+    for (i = 0; i < c->rows; ++i){
 //        if (omp_in_parallel()) {puts("Function is parallel");}
 //        printf("Using %d threads\n", omp_get_num_threads());
-        for (int j = 0; j < c->cols; ++j){
+        for (j = 0; j < c->cols; ++j){
             result = 0;
-            for (int k = 0; k < a->cols; ++k){
+            for (k = 0; k < a->cols; ++k){
                 result += (a->array[i][k] * b->array[k][j]);
             }
             c->array[i][j] = result;
@@ -124,11 +124,11 @@ Matrix readfile( char* filename, int* rowNum, int* columnNum )
     fscanf( dataFile, "%d", columnNum );
 
     Matrix m = new_matrix( *rowNum, *columnNum );
-
+    int i, j;
     // This code assume the input format is correct.
-    for( int i = 0; i < *rowNum; i++ )
+    for(i = 0; i < *rowNum; i++ )
     {
-        for( int j = 0; j < *columnNum; j++ )
+        for(j = 0; j < *columnNum; j++ )
         {
             fscanf( dataFile, "%d", &(m->array[i][j]) );
         }
@@ -169,10 +169,10 @@ void outPutMatrix( Matrix m )
 
     fprintf( outFile, "%d ", m->rows );
     fprintf( outFile, "%d\n", m->cols );
-
-    for( int i = 0; i < m->rows; i++)
+    int i, j;
+    for( i = 0; i < m->rows; i++)
     {
-        for( int j = 0; j < m->cols; j++ )
+        for( j = 0; j < m->cols; j++ )
         {
             fprintf( outFile, "%d ", m->array[i][j] );
         }

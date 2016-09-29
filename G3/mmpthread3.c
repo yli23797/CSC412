@@ -13,6 +13,7 @@ int C[N][M]; // result
 
 int num = 1;
 
+//function to calculate the matrix multiplication - one row per thread
 void *calc( void *param)
 {
 	int i, j, k;
@@ -36,12 +37,13 @@ void *calc( void *param)
 
 int main()
 {
-	int i, j, k;
 	
+	int i, j, k;	
 	pthread_t tids[NUM_THREADS];
 	long t;
 	void *status;
 	
+	//create 2 grids
 	for(i = 0; i < N; i++)
 	{
 		for(k=0; k < P; k++)
@@ -56,6 +58,8 @@ int main()
 			B[i][k] = rand()%10;
 		}
 	}
+	
+	//create results grid
 	for(i = 0; i < N; i++)
 	{
 		for(k=0; k < M; k++)
@@ -63,7 +67,8 @@ int main()
 			C[i][k] = 0;
 		}
 	}
-
+	
+	//print 2 grids to check matrix multiplication
 	/*printf("A: \n");
 	for(i = 0; i < N; i++)
 	{
@@ -87,17 +92,21 @@ int main()
 	printf("\n");
 	*/
 	
+	//create threads
 	for (t=0; t<NUM_THREADS; t++)
 		{
 			pthread_create( &tids[t], NULL, calc, (void*) t+1);
 		}
-		
+	
+	//join threads
 	for (t=0; t < NUM_THREADS; t++)
 		{
 			pthread_join( tids[t], &status );
 		
 		}
-
+		
+		
+	//print results grid
 	/*printf("C: \n");
 	for(i=0; i < N; i++)
 	{
