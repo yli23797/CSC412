@@ -24,7 +24,7 @@ def write_matrix(filename, matrix):
 if __name__=="__main__":
     try:
         os.mkdir("verifiedtestdata")
-    except FileExistsError:
+    except OSError:
         pass
     for t in range(5, 100, 5):
         A = numpy.random.randint(-5, 5, (t, t))
