@@ -134,7 +134,7 @@ for thepath in glob.iglob(os.path.join("testResult", "*")):
 print("\n\nRunning test...")
 range = (2**63-1) if args.longlong else 0x7FFFFFFF
 try:
-    @hypothesis.given( hypothesis.extra.numpy.arrays(int, (2, 2) ), hypothesis.extra.numpy.arrays(int, (2, 2) ) )
+    @hypothesis.given( hypothesis.extra.numpy.arrays(int, (5, 5) ), hypothesis.extra.numpy.arrays(int, (5, 5) ) )
     def test(matrix1, matrix2):
         hypothesis.assume(matrix1.shape == matrix2.shape)
         #Make sure we won't have any integer overflow
